@@ -1,0 +1,19 @@
+{
+  "name": "lotozeta",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "fetch-data": "node scripts/fetch-resultados.js"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.2.0",
+    "fflate": "^0.8.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^7.3.2"
+  }
+}

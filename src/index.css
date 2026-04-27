@@ -1,0 +1,1002 @@
+:root {
+  color-scheme: light;
+  --bg: #f7faff;
+  --surface: #ffffff;
+  --surface-hi: #eef6ff;
+  --border: #dce6f2;
+  --border-sub: #edf3fa;
+  --accent: #005ca9;
+  --accent-dim: #e8f2ff;
+  --accent-mid: #b7d8ff;
+  --hot: #168a45;
+  --cold: #d64545;
+  --gold: #d8a500;
+  --text: #172033;
+  --text-mid: #5d6b82;
+  --text-sub: #8c9aae;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: linear-gradient(180deg, #e8f2ff 0, var(--bg) 230px);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(180deg, #e8f2ff 0, var(--bg) 230px);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--accent-mid);
+  outline-offset: 2px;
+}
+
+.appShell {
+  width: min(760px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 14px 16px calc(112px + env(safe-area-inset-bottom));
+  background: transparent;
+}
+
+.appHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 28px rgba(0, 92, 169, 0.08);
+}
+
+.brandMark {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1.5px solid #2f7fc1;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--surface);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.appHeader h1,
+.appHeader p,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.appHeader h1 {
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.appHeader p:last-child,
+.panel p,
+.notice p,
+.emptyText,
+.smallText {
+  color: var(--text-mid);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.appMain {
+  display: block;
+}
+
+.pageStack {
+  display: grid;
+  gap: 14px;
+}
+
+.panel,
+.notice,
+.selectionPanel {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 12px 30px rgba(23, 32, 51, 0.06);
+}
+
+.panel {
+  padding: 18px;
+}
+
+.heroPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.62fr);
+  gap: 18px;
+  align-items: center;
+  border-color: var(--accent-mid);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--accent-dim) 100%);
+}
+
+.heroPanel h2 {
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-size: clamp(27px, 4.4vw, 38px);
+  line-height: 1.08;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.sectionHeader h3 {
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.compactStats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.statCard {
+  min-height: 104px;
+  padding: 14px;
+  border: 1px solid var(--border-sub);
+  border-radius: 8px;
+  background: var(--surface-hi);
+}
+
+.statCard span,
+.statCard p {
+  display: block;
+  color: var(--text-mid);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.statCard strong,
+.monoValue {
+  display: block;
+  margin-top: 8px;
+  color: var(--text);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.statCard.tone-accent strong {
+  color: var(--accent);
+}
+
+.toolbar,
+.stepSwitch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip,
+.button,
+.iconButton,
+.tabButton,
+.groupButton,
+.g10Cell,
+.textButton {
+  min-height: 52px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.chip {
+  padding: 0 16px;
+  color: var(--text-mid);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.chip.isActive {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.chip:disabled,
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--surface);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.button.secondary {
+  border-color: var(--border);
+  background: var(--surface-hi);
+  color: var(--text);
+}
+
+.button.compact {
+  min-height: 44px;
+}
+
+.bigButton {
+  width: min(100%, 260px);
+  min-height: 62px;
+  font-size: 18px;
+}
+
+.textButton {
+  min-height: 40px;
+  margin-top: 12px;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.iconButton {
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  color: var(--text-mid);
+}
+
+.numberMap {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.numberCard {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 92px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.numberCard.heat-hot {
+  border-color: color-mix(in srgb, var(--hot), var(--border) 55%);
+  background: color-mix(in srgb, var(--hot), white 92%);
+}
+
+.numberCard.heat-cold {
+  border-color: color-mix(in srgb, var(--cold), var(--border) 55%);
+  background: color-mix(in srgb, var(--cold), white 93%);
+}
+
+.numberCard.heat-neutral {
+  border-color: color-mix(in srgb, var(--gold), var(--border) 55%);
+  background: color-mix(in srgb, var(--gold), white 92%);
+}
+
+.numberMeta {
+  min-width: 0;
+}
+
+.numberMeta strong,
+.numberMeta span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.numberMeta strong {
+  font-size: 15px;
+}
+
+.numberMeta span {
+  margin-top: 4px;
+  color: var(--text-mid);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+}
+
+.barTrack {
+  width: 100%;
+  height: 8px;
+  margin-top: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--border-sub);
+}
+
+.barFill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.heat-hot .barFill {
+  background: var(--hot);
+}
+
+.heat-cold .barFill {
+  background: var(--cold);
+}
+
+.heat-neutral .barFill {
+  background: var(--gold);
+}
+
+.ball {
+  display: inline-grid;
+  width: var(--ball-size);
+  height: var(--ball-size);
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1.5px solid var(--ball-border);
+  border-radius: 50%;
+  background: var(--ball-bg);
+  box-shadow: var(--ball-shadow);
+  color: var(--ball-text);
+  font-family: "JetBrains Mono", monospace;
+  font-size: calc(var(--ball-size) * 0.3);
+  font-weight: 800;
+  letter-spacing: 0;
+  opacity: var(--ball-opacity);
+  transform: scale(var(--ball-scale));
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.4, 0.64, 1) var(--ball-delay),
+    opacity 0.24s ease var(--ball-delay),
+    border-color 0.18s ease,
+    background 0.18s ease;
+  user-select: none;
+}
+
+button.ball {
+  padding: 0;
+  cursor: pointer;
+}
+
+.selectionPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 22px rgba(23, 32, 51, 0.08);
+}
+
+.selectionPanel strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 20px;
+}
+
+.selectionPanel .miniBallRow {
+  grid-column: 1 / -1;
+  min-height: 32px;
+  gap: 6px;
+}
+
+.miniBallRow,
+.resultBalls {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.actionRow {
+  display: flex;
+  gap: 8px;
+}
+
+.moreSelected {
+  display: inline-flex;
+  min-width: 42px;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border: 1px solid var(--accent-mid);
+  border-radius: 999px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.range {
+  width: 100%;
+  height: 34px;
+  accent-color: var(--accent);
+}
+
+.costTable {
+  display: grid;
+  gap: 8px;
+}
+
+.costTable > div {
+  display: grid;
+  grid-template-columns: 110px 120px minmax(110px, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 58px;
+  padding: 10px;
+  border: 1px solid var(--border-sub);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.costTable > div.isActive {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.costTable span,
+.costTable strong,
+.costTable em,
+.gameStats span {
+  font-size: 14px;
+}
+
+.costTable strong,
+.costTable em {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+}
+
+.generatePanel {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.resultPanel {
+  min-height: 170px;
+}
+
+.resultPanel.isLoading {
+  border-color: var(--accent-mid);
+}
+
+.resultBalls {
+  min-height: 72px;
+}
+
+.resultBalls.compact {
+  min-height: auto;
+}
+
+.notice {
+  padding: 16px;
+  border-color: #f0d77a;
+  background: #fff9e8;
+}
+
+.notice strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #8a6500;
+}
+
+.stepSwitch {
+  padding: 0;
+}
+
+.groupPicker {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.groupButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 12px;
+  border-color: color-mix(in srgb, var(--group-color), var(--border) 55%);
+  background: color-mix(in srgb, var(--group-color), transparent 88%);
+}
+
+.groupButton.isActive {
+  border-color: var(--group-color);
+  background: color-mix(in srgb, var(--group-color), transparent 76%);
+}
+
+.groupButton strong {
+  font-family: "JetBrains Mono", monospace;
+  color: var(--group-color);
+}
+
+.g10Grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.g10Cell {
+  display: grid;
+  min-height: 92px;
+  place-items: center;
+  padding: 9px 6px;
+  color: var(--text-mid);
+}
+
+.g10Cell.isAssigned {
+  border-color: color-mix(in srgb, var(--group-color), var(--border) 55%);
+  background: color-mix(in srgb, var(--group-color), transparent 91%);
+}
+
+.g10Cell.isFaded {
+  opacity: 0.52;
+}
+
+.heatBallWrap {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.heatDot {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--heat-color);
+}
+
+.g10Cell .groupLabel {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.heatBadge {
+  display: inline-flex;
+  min-height: 20px;
+  align-items: center;
+  margin-top: 7px;
+  padding: 2px 6px;
+  border: 1px solid color-mix(in srgb, var(--heat-color), transparent 56%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--heat-color), transparent 88%);
+  color: var(--heat-color);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.groupSummary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.groupSummary article {
+  min-height: 112px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--group-color), var(--border) 56%);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--group-color), transparent 91%);
+}
+
+.groupSummary article > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.groupSummary span {
+  color: var(--text-mid);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+}
+
+.heatMiniStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.heatMiniStats span {
+  padding: 4px 6px;
+  border: 1px solid color-mix(in srgb, var(--heat-color), transparent 64%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--heat-color), transparent 91%);
+  color: var(--heat-color);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.g10Games {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.legendRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.grupoBadge {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  border: 1px solid color-mix(in srgb, var(--group-color), transparent 60%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--group-color), transparent 91%);
+}
+
+.grupoBadge > span,
+.comboDots span {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--group-color);
+}
+
+.grupoBadge strong,
+.grupoBadge em {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.grupoBadge strong {
+  color: var(--group-color);
+}
+
+.grupoBadge em {
+  color: var(--text-sub);
+}
+
+.comboDots {
+  display: flex;
+  gap: 6px;
+}
+
+.gameStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.gameStats span {
+  padding: 6px 8px;
+  border: 1px solid var(--border-sub);
+  border-radius: 6px;
+  color: var(--text-mid);
+}
+
+.fullButton {
+  width: 100%;
+}
+
+.tabBar {
+  position: fixed;
+  right: max(16px, calc((100vw - 760px) / 2 + 16px));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  left: max(16px, calc((100vw - 760px) / 2 + 16px));
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 34px rgba(23, 32, 51, 0.16);
+}
+
+.tabButton {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 4px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-mid);
+}
+
+.tabIcon {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+}
+
+.tabIcon svg {
+  width: 23px;
+  height: 23px;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.tabButton strong,
+.tabHelper {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tabButton strong {
+  font-size: 13px;
+}
+
+.tabHelper {
+  font-size: 11px;
+}
+
+.tabButton.isActive {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.installPrompt {
+  position: fixed;
+  right: max(16px, calc((100vw - 760px) / 2 + 16px));
+  bottom: 106px;
+  left: max(16px, calc((100vw - 760px) / 2 + 16px));
+  z-index: 11;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--accent-mid);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 12px 34px rgba(23, 32, 51, 0.16);
+}
+
+.installPrompt strong,
+.installPrompt span {
+  display: block;
+}
+
+.installPrompt span {
+  color: var(--text-mid);
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .heroPanel,
+  .generatePanel {
+    grid-template-columns: 1fr;
+  }
+
+  .statGrid,
+  .compactStats,
+  .g10Games,
+  .groupSummary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .numberMap {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .costTable > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .appShell {
+    padding: 12px 12px calc(116px + env(safe-area-inset-bottom));
+  }
+
+  .appHeader {
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .brandMark {
+    width: 50px;
+    height: 50px;
+  }
+
+  .appHeader h1 {
+    font-size: 25px;
+  }
+
+  .appHeader p:last-child,
+  .panel p,
+  .notice p,
+  .emptyText,
+  .smallText {
+    font-size: 15px;
+  }
+
+  .heroPanel h2 {
+    font-size: 29px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .numberMap,
+  .g10Grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .numberCard {
+    display: grid;
+    min-height: 86px;
+    place-items: center;
+    padding: 8px 3px;
+  }
+
+  .numberMeta {
+    display: none;
+  }
+
+  .g10Cell {
+    min-height: 78px;
+    padding: 6px 2px;
+  }
+
+  .g10Cell .ball,
+  .numberCard .ball {
+    --ball-size: 48px !important;
+  }
+
+  .g10Cell .groupLabel,
+  .g10Cell .heatBadge {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .g10Cell .groupLabel {
+    font-size: 10px;
+  }
+
+  .g10Cell .heatBadge {
+    min-height: 18px;
+    padding: 2px 5px;
+    font-size: 9px;
+  }
+
+  .groupPicker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .selectionPanel {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .tabBar {
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: 10px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .tabButton {
+    min-height: 64px;
+    padding: 6px 4px;
+  }
+
+  .tabButton strong {
+    font-size: 12px;
+  }
+
+  .tabHelper {
+    display: none;
+  }
+
+  .installPrompt {
+    right: 10px;
+    left: 10px;
+    grid-template-columns: 1fr auto;
+  }
+
+  .installPrompt .iconButton {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .statGrid,
+  .compactStats,
+  .groupSummary,
+  .g10Games {
+    grid-template-columns: 1fr;
+  }
+
+  .heroPanel h2 {
+    font-size: 27px;
+  }
+
+  .numberMap,
+  .g10Grid {
+    gap: 5px;
+  }
+
+  .numberCard,
+  .g10Cell {
+    min-height: 78px;
+  }
+
+  .g10Cell .ball,
+  .numberCard .ball {
+    --ball-size: 48px !important;
+  }
+}
