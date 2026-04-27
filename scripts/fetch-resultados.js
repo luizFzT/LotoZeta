@@ -267,13 +267,15 @@ async function getSorteios() {
 
 async function main() {
   const { sorteios, fonte } = await getSorteios();
-  const frequencias = calcularFrequencias(sorteios);
+  const sorteiosOrdenados = [...sorteios].sort((a, b) => a.concurso - b.concurso);
+  const frequencias = calcularFrequencias(sorteiosOrdenados);
   const output = {
     atualizadoEm: new Date().toISOString(),
     fonte,
-    totalSorteios: sorteios.length,
+    totalSorteios: sorteiosOrdenados.length,
     frequencias,
-    ultimosSorteios: sorteios.slice(-10).reverse(),
+    ultimosSorteios: sorteiosOrdenados.slice(-10).reverse(),
+    sorteios: sorteiosOrdenados,
   };
 
   const outPath = path.join(__dirname, '../src/data/resultados.json');
@@ -281,7 +283,7 @@ async function main() {
   fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`, 'utf8');
 
   const [maisSorteado, vezes] = Object.entries(frequencias).sort((a, b) => b[1] - a[1])[0];
-  console.log(`${sorteios.length} sorteios processados.`);
+  console.log(`${sorteiosOrdenados.length} sorteios processados.`);
   console.log(`Numero mais sorteado: ${maisSorteado} (${vezes} vezes).`);
 }
 
