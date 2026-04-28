@@ -6,9 +6,6 @@ name: Deploy LotoZeta GitHub Pages
       - main
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -22,12 +19,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -40,10 +37,10 @@ jobs:
         run: npm run build
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5.0.0
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v5.0.0
+        uses: actions/deploy-pages@v4
