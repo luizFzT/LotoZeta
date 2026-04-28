@@ -12,7 +12,7 @@ O app nao promete premio nem aumento garantido de chance. Ele organiza dados his
 
 - Hospedagem: GitHub Pages, sem backend e sem custo fixo.
 - Stack: React + Vite + service worker manual.
-- Dados: `src/data/resultados.json`, gerado por `scripts/fetch-resultados.js` a partir do XLSX oficial da Caixa.
+- Dados: `src/data/resultados.json`, gerado por `scripts/fetch-resultados.js` a partir do XLSX oficial da Caixa e completado pela API oficial de concurso atual.
 - Publico: usuario comum, com linguagem simples e botoes grandes.
 - Preco base: `R$ 3,50` por aposta simples de 15 numeros, conforme tabela atual da Caixa consultada em 2026-04-27.
 - Tom visual: dark SaaS analytics, Zeta Brand, com verde como unico destaque de interface.
@@ -125,9 +125,11 @@ O deploy roda no push para `main`:
 1. Instala dependencias.
 2. Roda `npm run fetch-data`.
 3. Executa `npm run build`.
-4. Publica `dist/` na branch `gh-pages`.
+4. Publica `dist/` pelo GitHub Pages via workflow.
 
-Nota de implementacao: o endpoint de download da Caixa entrega XLSX, nao CSV puro. O script usa `fflate` para abrir o XLSX como ZIP, ler `xl/worksheets/sheet1.xml` e converter as linhas em `resultados.json`. O historico JSON publico fica apenas como fallback se a Caixa falhar.
+Nota de implementacao: o endpoint de download da Caixa entrega XLSX, nao CSV puro. O script usa `fflate` para abrir o XLSX como ZIP, ler `xl/worksheets/sheet1.xml` e converter as linhas em `resultados.json`. Como esse download historico pode ficar defasado, o script tambem consulta `https://servicebus2.caixa.gov.br/portaldeloterias/api/lotofacil` e busca concursos faltantes em `https://servicebus2.caixa.gov.br/portaldeloterias/api/lotofacil/{concurso}`. O historico JSON publico fica apenas como fallback se a Caixa falhar.
+
+Nota de UX: a tela de analise deve mostrar `Dados ate Concurso X` usando `ultimoConcurso`, e nao a data de download `atualizadoEm`. A data de download serve para auditoria tecnica, mas nao prova que o historico esta atual.
 
 Nota de seguranca: a primeira versao usava `vite-plugin-pwa`, mas o audit apontou vulnerabilidade alta em dependencias transitivas do Workbox. O MVP ficou com service worker manual para manter PWA sem esse pacote.
 
@@ -167,5 +169,6 @@ atualizadoEm, totalSorteios, frequencias e ultimosSorteios.
 
 - Caixa Lotofacil: https://loterias.caixa.gov.br/Paginas/Lotofacil.aspx
 - Endpoint oficial de download: https://servicebus2.caixa.gov.br/portaldeloterias/api/resultados/download?modalidade=Lotof%C3%A1cil
+- Endpoint oficial atual: https://servicebus2.caixa.gov.br/portaldeloterias/api/lotofacil
 - Historico JSON fallback: https://raw.githubusercontent.com/guilhermeasn/loteria.json/master/data/lotofacil.json
 - Vite GitHub Pages: https://vitejs.dev/guide/static-deploy.html#github-pages

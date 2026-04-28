@@ -2,6 +2,7 @@ import resultados from '../data/resultados.json';
 import { NUMBERS, PRICE_PER_GAME } from '../styles/tokens';
 
 const frequencies = resultados.frequencias ?? {};
+const latestDraw = resultados.ultimoConcurso ?? resultados.ultimosSorteios?.[0] ?? null;
 const values = NUMBERS.map((number) => Number(frequencies[number] ?? 0));
 const maxFrequency = Math.max(...values, 1);
 const minFrequency = Math.min(...values);
@@ -114,6 +115,8 @@ export function useFrequencia() {
   return {
     frequencias: frequencies,
     totalSorteios: resultados.totalSorteios ?? 0,
+    dadosAte: resultados.dadosAte ?? latestDraw?.data ?? '',
+    ultimoConcurso: latestDraw,
     ultimosSorteios: resultados.ultimosSorteios ?? [],
     atualizadoEm: resultados.atualizadoEm,
     fonte: resultados.fonte,

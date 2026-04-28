@@ -1,14 +1,17 @@
 # Backtest LotoZeta
 
-Gerado em: 2026-04-27T23:28:42.285Z
+Gerado em: 2026-04-28T10:49:55.536Z
 
 ## Base usada
 
-- Fonte: https://servicebus2.caixa.gov.br/portaldeloterias/api/resultados/download?modalidade=Lotof%C3%A1cil
-- Atualizado em: 2026-04-27T23:27:46.512Z
-- Sorteios no arquivo: 3596
+- Fontes:
+  - https://servicebus2.caixa.gov.br/portaldeloterias/api/resultados/download?modalidade=Lotof%C3%A1cil
+  - https://servicebus2.caixa.gov.br/portaldeloterias/api/lotofacil
+- Atualizado em: 2026-04-28T10:49:07.097Z
+- Sorteios no arquivo: 3671
+- Dados ate: concurso 3671 (27/04/2026)
 - Janela inicial minima: 100 concursos
-- Concursos testados: 101 ate 3596
+- Concursos testados: 101 ate 3671
 - Preco por jogo simples usado no custo: R$ 3,50
 
 ## Metodo
@@ -27,9 +30,9 @@ Nao calcula lucro real, porque o arquivo historico nao inclui rateio por faixa. 
 
 | Estrategia | Concursos | Jogos total | Custo estimado | Media melhor acerto | Melhor acerto | Concursos 11+ | Bilhetes 11 | Bilhetes 12 | Bilhetes 13 | Bilhetes 14 | Bilhetes 15 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Top 15 historico | 3496 | 3496 | R$ 12.236,00 | 9,03 | 14 | 388 | 330 | 54 | 3 | 1 | 0 |
-| Balanceado LotoZeta | 3496 | 3496 | R$ 12.236,00 | 9,05 | 13 | 399 | 329 | 65 | 5 | 0 | 0 |
-| G10 automatico | 3496 | 13984 | R$ 48.944,00 | 10,39 | 14 | 1337 | 1267 | 234 | 15 | 2 | 0 |
+| Top 15 historico | 3571 | 3571 | R$ 12.498,50 | 9,03 | 14 | 397 | 336 | 57 | 3 | 1 | 0 |
+| Balanceado LotoZeta | 3571 | 3571 | R$ 12.498,50 | 9,05 | 13 | 405 | 334 | 66 | 5 | 0 | 0 |
+| G10 automatico | 3571 | 14284 | R$ 49.994,00 | 10,39 | 14 | 1361 | 1292 | 238 | 15 | 2 | 0 |
 
 ## Leitura rapida
 

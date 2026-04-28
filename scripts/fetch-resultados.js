@@ -4,9 +4,16 @@ import { fileURLToPath } from 'node:url';
 import { strFromU8, unzipSync } from 'fflate';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DATA_PATH = path.join(__dirname, '../src/data/resultados.json');
 
 const URL_CAIXA =
   'https://servicebus2.caixa.gov.br/portaldeloterias/api/resultados/download?modalidade=Lotof%C3%A1cil';
+
+const URL_CAIXA_ATUAL =
+  'https://servicebus2.caixa.gov.br/portaldeloterias/api/lotofacil';
+
+const URL_CAIXA_CONCURSO =
+  'https://servicebus2.caixa.gov.br/portaldeloterias/api/lotofacil/';
 
 const URL_FALLBACK_JSON =
   'https://raw.githubusercontent.com/guilhermeasn/loteria.json/master/data/lotofacil.json';
@@ -14,7 +21,8 @@ const URL_FALLBACK_JSON =
 const HEADERS = {
   'User-Agent':
     'Mozilla/5.0 (compatible; LotoZeta/1.0; +https://github.com/luizFzT/lotozeta)',
-  Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,text/plain,*/*',
+  Accept:
+    'application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,text/plain,*/*',
 };
 
 async function fetchBuffer(url) {
@@ -227,6 +235,27 @@ function parseSource(buffer) {
   return parseCSV(text);
 }
 
+function parseCaixaApiSorteio(data) {
+  const concurso = normalizeNumber(data?.numero);
+  const numeros = Array.isArray(data?.listaDezenas)
+    ? data.listaDezenas
+        .map(normalizeNumber)
+        .filter((n) => n >= 1 && n <= 25)
+        .slice(0, 15)
+        .sort((a, b) => a - b)
+    : [];
+
+  if (!concurso || numeros.length !== 15 || new Set(numeros).size !== 15) {
+    return null;
+  }
+
+  return {
+    concurso,
+    data: normalizeDate(data.dataApuracao),
+    numeros,
+  };
+}
+
 function calcularFrequencias(sorteios) {
   const frequencias = {};
   for (let i = 1; i <= 25; i += 1) frequencias[i] = 0;
@@ -238,6 +267,88 @@ function calcularFrequencias(sorteios) {
   }
 
   return frequencias;
+}
+
+function normalizeSorteio(sorteio) {
+  const concurso = normalizeNumber(sorteio?.concurso);
+  const numeros = Array.isArray(sorteio?.numeros)
+    ? sorteio.numeros
+        .map(normalizeNumber)
+        .filter((n) => n >= 1 && n <= 25)
+        .slice(0, 15)
+        .sort((a, b) => a - b)
+    : [];
+
+  if (!concurso || numeros.length !== 15 || new Set(numeros).size !== 15) {
+    return null;
+  }
+
+  return {
+    concurso,
+    data: normalizeDate(sorteio.data),
+    numeros,
+  };
+}
+
+function mergeSorteios(...lists) {
+  const byConcurso = new Map();
+
+  for (const list of lists) {
+    for (const item of list ?? []) {
+      const sorteio = normalizeSorteio(item);
+      if (sorteio) byConcurso.set(sorteio.concurso, sorteio);
+    }
+  }
+
+  return Array.from(byConcurso.values()).sort((a, b) => a.concurso - b.concurso);
+}
+
+function readExistingSorteios() {
+  try {
+    const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+    return Array.isArray(data.sorteios) ? data.sorteios : [];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchCaixaApiSorteio(url) {
+  const buffer = await fetchBuffer(url);
+  const data = JSON.parse(buffer.toString('utf8'));
+  const sorteio = parseCaixaApiSorteio(data);
+
+  if (!sorteio) {
+    throw new Error(`Resposta sem sorteio valido em ${url}`);
+  }
+
+  return sorteio;
+}
+
+async function completarComApiAtual(sorteios) {
+  try {
+    console.log('Buscando resultado atual: Caixa API oficial...');
+    const ultimo = await fetchCaixaApiSorteio(URL_CAIXA_ATUAL);
+    const ultimoLocal = Math.max(...sorteios.map((sorteio) => sorteio.concurso), 0);
+    const faltantes = [];
+
+    if (ultimo.concurso > ultimoLocal) {
+      console.log(`Completando concursos ${ultimoLocal + 1} ate ${ultimo.concurso}...`);
+
+      for (let concurso = ultimoLocal + 1; concurso <= ultimo.concurso; concurso += 1) {
+        if (concurso === ultimo.concurso) {
+          faltantes.push(ultimo);
+          continue;
+        }
+
+        faltantes.push(await fetchCaixaApiSorteio(`${URL_CAIXA_CONCURSO}${concurso}`));
+      }
+    }
+
+    return mergeSorteios(sorteios, faltantes, [ultimo]);
+  } catch (error) {
+    console.warn(`Caixa API atual indisponivel: ${error.message}`);
+    return sorteios;
+  }
 }
 
 async function getSorteios() {
@@ -253,7 +364,15 @@ async function getSorteios() {
       const sorteios = parseSource(buffer);
 
       if (sorteios.length) {
-        return { sorteios, fonte: source.url };
+        const existentes = readExistingSorteios();
+        const base = mergeSorteios(sorteios, existentes);
+        const completos = await completarComApiAtual(base);
+
+        return {
+          sorteios: completos,
+          fonte: source.url,
+          fontes: [source.url, URL_CAIXA_ATUAL],
+        };
       }
 
       console.warn(`${source.label} respondeu, mas sem sorteios validos.`);
@@ -266,24 +385,28 @@ async function getSorteios() {
 }
 
 async function main() {
-  const { sorteios, fonte } = await getSorteios();
+  const { sorteios, fonte, fontes } = await getSorteios();
   const sorteiosOrdenados = [...sorteios].sort((a, b) => a.concurso - b.concurso);
   const frequencias = calcularFrequencias(sorteiosOrdenados);
+  const ultimoConcurso = sorteiosOrdenados.at(-1);
   const output = {
     atualizadoEm: new Date().toISOString(),
     fonte,
+    fontes,
     totalSorteios: sorteiosOrdenados.length,
+    dadosAte: ultimoConcurso?.data ?? '',
+    ultimoConcurso,
     frequencias,
     ultimosSorteios: sorteiosOrdenados.slice(-10).reverse(),
     sorteios: sorteiosOrdenados,
   };
 
-  const outPath = path.join(__dirname, '../src/data/resultados.json');
-  fs.mkdirSync(path.dirname(outPath), { recursive: true });
-  fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`, 'utf8');
+  fs.mkdirSync(path.dirname(DATA_PATH), { recursive: true });
+  fs.writeFileSync(DATA_PATH, `${JSON.stringify(output, null, 2)}\n`, 'utf8');
 
   const [maisSorteado, vezes] = Object.entries(frequencias).sort((a, b) => b[1] - a[1])[0];
   console.log(`${sorteiosOrdenados.length} sorteios processados.`);
+  console.log(`Ultimo concurso: ${ultimoConcurso.concurso} (${ultimoConcurso.data}).`);
   console.log(`Numero mais sorteado: ${maisSorteado} (${vezes} vezes).`);
 }
 

@@ -50,6 +50,9 @@ function readSorteios() {
   return {
     atualizadoEm: data.atualizadoEm,
     fonte: data.fonte,
+    fontes: Array.isArray(data.fontes) ? data.fontes : [data.fonte].filter(Boolean),
+    dadosAte: data.dadosAte,
+    ultimoConcurso: data.ultimoConcurso,
     sorteios: sorteios
       .filter((sorteio) => Array.isArray(sorteio.numeros) && sorteio.numeros.length === 15)
       .map((sorteio) => ({
@@ -219,10 +222,11 @@ function markdownTable(headers, rows) {
   return [header, separator, ...body].join('\n');
 }
 
-function buildReport({ atualizadoEm, fonte, sorteios, minHistory, summaries }) {
+function buildReport({ atualizadoEm, fontes, dadosAte, ultimoConcurso, sorteios, minHistory, summaries }) {
   const tested = sorteios.slice(minHistory);
   const first = tested[0];
   const last = tested[tested.length - 1];
+  const sourceList = fontes.map((source) => `  - ${source}`).join('\n');
   const rows = summaries.map((summary) => ({
     Estrategia: summary.name,
     Concursos: String(summary.concursos),
@@ -248,9 +252,11 @@ Gerado em: ${new Date().toISOString()}
 
 ## Base usada
 
-- Fonte: ${fonte}
+- Fontes:
+${sourceList}
 - Atualizado em: ${atualizadoEm}
 - Sorteios no arquivo: ${sorteios.length}
+- Dados ate: concurso ${ultimoConcurso?.concurso ?? last.concurso} (${dadosAte || last.data})
 - Janela inicial minima: ${minHistory} concursos
 - Concursos testados: ${first.concurso} ate ${last.concurso}
 - Preco por jogo simples usado no custo: ${formatCurrency(PRICE_PER_GAME)}
@@ -295,13 +301,21 @@ ${markdownTable(
 
 function main() {
   const minHistory = getArg('min-history', DEFAULT_MIN_HISTORY);
-  const { atualizadoEm, fonte, sorteios } = readSorteios();
+  const { atualizadoEm, fontes, dadosAte, ultimoConcurso, sorteios } = readSorteios();
   const summaries = runBacktest(sorteios, minHistory);
 
   console.log(`Backtest LotoZeta - ${sorteios.length} sorteios, min-history=${minHistory}`);
   console.table(buildConsoleRows(summaries));
 
-  const report = buildReport({ atualizadoEm, fonte, sorteios, minHistory, summaries });
+  const report = buildReport({
+    atualizadoEm,
+    fontes,
+    dadosAte,
+    ultimoConcurso,
+    sorteios,
+    minHistory,
+    summaries,
+  });
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });
   fs.writeFileSync(reportPath, `${report.trimEnd()}\n`, 'utf8');
   console.log(`Relatorio salvo em: ${path.relative(rootDir, reportPath)}`);

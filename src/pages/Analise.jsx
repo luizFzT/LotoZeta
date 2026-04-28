@@ -14,7 +14,8 @@ const filters = [
 
 export default function Analise({ selectedNumbers, setSelectedNumbers, openTab }) {
   const [filter, setFilter] = useState('all');
-  const { frequencias, totalSorteios, norm, heat, heatLabel, atualizadoEm } = useFrequencia();
+  const { frequencias, totalSorteios, norm, heat, heatLabel, dadosAte, ultimoConcurso } =
+    useFrequencia();
   const selectedPreview = selectedNumbers.slice(0, 5);
   const hiddenSelected = selectedNumbers.length - selectedPreview.length;
 
@@ -34,8 +35,8 @@ export default function Analise({ selectedNumbers, setSelectedNumbers, openTab }
     });
   }
 
-  const updatedLabel = atualizadoEm
-    ? new Date(atualizadoEm).toLocaleDateString('pt-BR')
+  const latestDrawLabel = ultimoConcurso?.concurso
+    ? `Concurso ${ultimoConcurso.concurso}`
     : 'sem data';
 
   return (
@@ -51,7 +52,7 @@ export default function Analise({ selectedNumbers, setSelectedNumbers, openTab }
         </div>
         <div className="statGrid compactStats">
           <StatCard label="Sorteios usados" value={totalSorteios.toLocaleString('pt-BR')} />
-          <StatCard label="Atualizado" value={updatedLabel} />
+          <StatCard label="Dados ate" value={latestDrawLabel} detail={dadosAte || undefined} />
         </div>
       </section>
 
